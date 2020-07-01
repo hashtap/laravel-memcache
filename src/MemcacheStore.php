@@ -5,19 +5,23 @@ use Illuminate\Contracts\Cache\Store;
 
 class MemcacheStore extends TaggableStore implements Store
 {
-	/**
-	 * The Memcached instance.
-	 *
-	 * @var \Memcache
-	 */
-	protected $memcache;
+	const MAX_EXPIRE_IN_SECONDS = 2592000;
 
-	/**
-	 * A string that should be prepended to keys.
-	 *
-	 * @var string
-	 */
-	protected $prefix;
+	protected
+		/**
+		 * The Memcached instance.
+		 *
+		 * @var \Memcache
+		 */
+		$memcache,
+
+		/**
+		 * A string that should be prepended to keys.
+		 *
+		 * @var string
+		 */
+		$prefix;
+
 
 	/**
 	 * Create a new Memcache store.
@@ -73,7 +77,7 @@ class MemcacheStore extends TaggableStore implements Store
 	 */
 	public function put($key, $value, $seconds)
 	{
-		$this->memcache->set($this->prefix . $key, $value, false, $seconds);
+		$this->memcache->set($this->prefix . $key, $value, false, $this->validateSeconds($seconds));
 	}
 
 	/**
@@ -100,7 +104,7 @@ class MemcacheStore extends TaggableStore implements Store
 	 */
 	public function add($key, $value, $seconds)
 	{
-		return $this->memcache->add($this->prefix . $key, $value, false, $seconds);
+		return $this->memcache->add($this->prefix . $key, $value, false, $this->validateSeconds($seconds));
 	}
 
 	/**
@@ -180,4 +184,18 @@ class MemcacheStore extends TaggableStore implements Store
 		return $this->prefix;
 	}
 
+	/**
+	 * @param int $seconds
+	 * @return int
+	 */
+	protected function validateSeconds(int $seconds): int
+	{
+		if ($seconds > self::MAX_EXPIRE_IN_SECONDS) {
+			$seconds = self::MAX_EXPIRE_IN_SECONDS;
+		} else if ($seconds < 0) {
+			$seconds = 0;
+		}
+
+		return $seconds;
+	}
 }
