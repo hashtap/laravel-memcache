@@ -63,9 +63,11 @@ class MemcacheHandler implements SessionHandlerInterface
 	 * @param string $data
 	 * @return bool
 	 */
-	public function write($sessionId, $data)
+	public function write($sessionId, $data): bool
 	{
-		return $this->cache->put($sessionId, $data, $this->seconds);
+		$this->cache->put($sessionId, $data, $this->seconds);
+
+		return true;
 	}
 
 	/**
@@ -74,7 +76,9 @@ class MemcacheHandler implements SessionHandlerInterface
 	 */
 	public function destroy($sessionId): bool
 	{
-		return $this->cache->forget($sessionId);
+		$this->cache->forget($sessionId);
+
+		return true;
 	}
 
 	/**
