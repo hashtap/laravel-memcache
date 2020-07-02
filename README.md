@@ -1,7 +1,7 @@
 
 [![Build Status](https://travis-ci.org/swiggles/laravel-memcache.svg?branch=master)](https://travis-ci.org/swiggles/laravel-memcache)
 
-## Laravel 5 Memcache Driver
+## Laravel Memcache Driver
 
 If you're developing on Windows and you're having trouble setting up Memcached with Laravel.
 
